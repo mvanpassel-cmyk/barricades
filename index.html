@@ -19,7 +19,6 @@
     --lamp-ink: #1c1206;
     --glass: rgba(9, 15, 30, 0.58);
     --glass-line: rgba(247, 213, 150, 0.2);
-    --track: rgba(247, 236, 212, 0.22);
     --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
     --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
@@ -233,20 +232,19 @@
   }
 
   .player {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 18px;
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 9px;
     background: var(--glass);
     border: 1px solid var(--glass-line);
-    border-radius: 14px;
+    border-radius: 999px;
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
   }
   .play {
     flex: none;
-    width: 54px;
-    height: 54px;
+    width: 44px;
+    height: 44px;
     border: 0;
     border-radius: 50%;
     background: var(--lamp);
@@ -258,48 +256,12 @@
     transition: box-shadow 0.4s ease, transform 0.12s ease;
   }
   .play:active { transform: scale(0.94); }
-  .play:focus-visible, .seek:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
-  .play svg { width: 21px; height: 21px; fill: currentColor; }
+  .play:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
+  .play svg { width: 17px; height: 17px; fill: currentColor; }
   .play .i-pause { display: none; }
   .playing .play .i-play { display: none; }
   .playing .play .i-pause { display: block; }
-  .playing .play { box-shadow: 0 0 26px 4px rgba(241, 182, 94, 0.45); }
-
-  .track { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
-  .seek {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 22px;
-    margin: 0;
-    background: transparent;
-    cursor: pointer;
-    --pos: 0%;
-  }
-  .seek::-webkit-slider-runnable-track {
-    height: 3px;
-    border-radius: 2px;
-    background: linear-gradient(to right, var(--lamp) var(--pos), var(--track) var(--pos));
-  }
-  .seek::-moz-range-track { height: 3px; border-radius: 2px; background: var(--track); }
-  .seek::-moz-range-progress { height: 3px; border-radius: 2px; background: var(--lamp); }
-  .seek::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 15px;
-    height: 15px;
-    margin-top: -6px;
-    border: 0;
-    border-radius: 50%;
-    background: var(--paper);
-  }
-  .seek::-moz-range-thumb { width: 15px; height: 15px; border: 0; border-radius: 50%; background: var(--paper); }
-  .times {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.8125rem;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-  }
+  .playing .play { box-shadow: 0 0 22px 4px rgba(241, 182, 94, 0.45); }
 
   @media (min-width: 900px) {
     main {
@@ -347,10 +309,6 @@
       <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg>
       <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="5" height="16" rx="1"/><rect x="14" y="4" width="5" height="16" rx="1"/></svg>
     </button>
-    <div class="track">
-      <input class="seek" id="seek" type="range" min="0" max="1000" value="0" aria-label="Positie in het liedje">
-      <div class="times"></div>
-    </div>
   </div>
 
   <audio id="audio" preload="metadata" src="Riot_On_An_Empty_Street.mp3" controls></audio>
@@ -392,49 +350,20 @@
     var audio = document.getElementById('audio');
     var player = document.getElementById('player');
     var play = document.getElementById('play');
-    var seek = document.getElementById('seek');
-    var cur = document.getElementById('cur');
-    var dur = document.getElementById('dur');
-    var dragging = false;
 
     audio.removeAttribute('controls');
     audio.hidden = true;
 
-    function fmt(s) {
-      if (!isFinite(s)) return '0:00';
-      var m = Math.floor(s / 60), r = Math.floor(s % 60);
-      return m + ':' + (r < 10 ? '0' : '') + r;
-    }
-    function paint() {
-      var d = audio.duration || 0;
-      var p = d ? (audio.currentTime / d) * 1000 : 0;
-      if (!dragging) seek.value = p;
-      seek.style.setProperty('--pos', (p / 10) + '%');
-      if (cur) cur.textContent = fmt(audio.currentTime);
-    }
-    audio.addEventListener('loadedmetadata', function () { if (dur) dur.textContent = fmt(audio.duration); });
-    audio.addEventListener('timeupdate', paint);
     audio.addEventListener('play', function () {
       player.classList.add('playing'); play.setAttribute('aria-label', 'Pauzeren');
     });
     audio.addEventListener('pause', function () {
       player.classList.remove('playing'); play.setAttribute('aria-label', 'Afspelen');
     });
-    audio.addEventListener('ended', function () { audio.currentTime = 0; paint(); });
+    audio.addEventListener('ended', function () { audio.currentTime = 0; });
 
     play.addEventListener('click', function () {
       if (audio.paused) { audio.play(); } else { audio.pause(); }
-    });
-    seek.addEventListener('input', function () {
-      dragging = true;
-      var d = audio.duration || 0;
-      seek.style.setProperty('--pos', (seek.value / 10) + '%');
-      if (cur) cur.textContent = fmt((seek.value / 1000) * d);
-    });
-    seek.addEventListener('change', function () {
-      var d = audio.duration || 0;
-      audio.currentTime = (seek.value / 1000) * d;
-      dragging = false;
     });
   })();
 </script>
