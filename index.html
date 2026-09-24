@@ -349,7 +349,7 @@
     </button>
     <div class="track">
       <input class="seek" id="seek" type="range" min="0" max="1000" value="0" aria-label="Positie in het liedje">
-      <div class="times"><span id="cur">0:00</span><span id="dur">4:05</span></div>
+      <div class="times"></div>
     </div>
   </div>
 
@@ -410,9 +410,9 @@
       var p = d ? (audio.currentTime / d) * 1000 : 0;
       if (!dragging) seek.value = p;
       seek.style.setProperty('--pos', (p / 10) + '%');
-      cur.textContent = fmt(audio.currentTime);
+      if (cur) cur.textContent = fmt(audio.currentTime);
     }
-    audio.addEventListener('loadedmetadata', function () { dur.textContent = fmt(audio.duration); });
+    audio.addEventListener('loadedmetadata', function () { if (dur) dur.textContent = fmt(audio.duration); });
     audio.addEventListener('timeupdate', paint);
     audio.addEventListener('play', function () {
       player.classList.add('playing'); play.setAttribute('aria-label', 'Pauzeren');
@@ -429,7 +429,7 @@
       dragging = true;
       var d = audio.duration || 0;
       seek.style.setProperty('--pos', (seek.value / 10) + '%');
-      cur.textContent = fmt((seek.value / 1000) * d);
+      if (cur) cur.textContent = fmt((seek.value / 1000) * d);
     });
     seek.addEventListener('change', function () {
       var d = audio.duration || 0;
