@@ -4,141 +4,165 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b1224">
 <title>I am climbing barricades in empty street at night</title>
-<style>
-  :root { color-scheme: light; }
-  body { margin: 0; }
-</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Figtree:wght@400;500&display=swap">
 <style>
   :root {
-    --bg: #eceef2;
-    --surface: #f7f8fa;
-    --ink: #161b26;
-    --muted: #5a6273;
-    --line: #c9ceda;
-    --accent: #2c5a8c;
-    --accent-ink: #ffffff;
-    --track: #d3d8e2;
-    --font-display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+    color-scheme: dark;
+    --night: #0b1224;
+    --paper: #f7ecd4;
+    --muted: rgba(247, 236, 212, 0.68);
+    --lamp: #f1b65e;
+    --lamp-ink: #1c1206;
+    --glass: rgba(9, 15, 30, 0.58);
+    --glass-line: rgba(247, 213, 150, 0.2);
+    --track: rgba(247, 236, 212, 0.22);
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
     --font-body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      color-scheme: dark;
-      --bg: #10141c;
-      --surface: #171c27;
-      --ink: #e8ebf2;
-      --muted: #97a0b3;
-      --line: #2b3242;
-      --accent: #8fb6e3;
-      --accent-ink: #10141c;
-      --track: #2b3242;
-    }
-  }
-  :root[data-theme="dark"] {
-    color-scheme: dark;
-    --bg: #10141c;
-    --surface: #171c27;
-    --ink: #e8ebf2;
-    --muted: #97a0b3;
-    --line: #2b3242;
-    --accent: #8fb6e3;
-    --accent-ink: #10141c;
-    --track: #2b3242;
-  }
-
+  * { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
-    background: var(--bg);
-    color: var(--ink);
+    margin: 0;
+    background: var(--night);
+    color: var(--paper);
     font-family: var(--font-body);
-    font-size: 17px;
+    font-size: 16px;
     line-height: 1.5;
-    padding-inline: 20px;
-    padding-block: 24px;
-    display: grid;
-    place-items: center;
   }
+
+  .scene {
+    position: fixed;
+    inset: 0;
+    background: var(--night) url("image.png") 30% 50% / cover no-repeat;
+  }
+  .scene::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, rgba(7, 12, 26, 0.86) 0%, rgba(7, 12, 26, 0.35) 42%, rgba(7, 12, 26, 0) 70%);
+  }
+
   main {
-    width: 100%;
-    max-width: 30rem;
+    position: relative;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    justify-content: flex-end;
+    gap: 22px;
+    width: 100%;
+    max-width: 34rem;
+    margin-inline: auto;
+    padding-inline: 20px;
+    padding-block: 32px 44px;
   }
-  .note {
-    font-size: 1.0625rem;
-    color: var(--muted);
-    max-width: 34ch;
-  }
-  .note strong { color: var(--ink); font-weight: 500; }
+
   h1 {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: clamp(2rem, 9vw, 3rem);
-    line-height: 1.02;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
     margin: 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 600;
+    font-size: clamp(2.3rem, 10.5vw, 3.6rem);
+    line-height: 1.05;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+    color: var(--paper);
+    text-shadow: 0 2px 24px rgba(5, 9, 20, 0.7);
   }
+
   .player {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 18px;
     display: flex;
     align-items: center;
     gap: 16px;
+    padding: 16px 18px;
+    background: var(--glass);
+    border: 1px solid var(--glass-line);
+    border-radius: 14px;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
   }
   .play {
     flex: none;
-    width: 56px; height: 56px;
-    border-radius: 50%;
+    width: 54px;
+    height: 54px;
     border: 0;
-    background: var(--accent);
-    color: var(--accent-ink);
-    display: grid; place-items: center;
+    border-radius: 50%;
+    background: var(--lamp);
+    color: var(--lamp-ink);
+    display: grid;
+    place-items: center;
     cursor: pointer;
+    box-shadow: 0 0 0 0 rgba(241, 182, 94, 0);
+    transition: box-shadow 0.4s ease, transform 0.12s ease;
   }
-  .play:focus-visible, .seek:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-  .play svg { width: 22px; height: 22px; fill: currentColor; }
+  .play:active { transform: scale(0.94); }
+  .play:focus-visible, .seek:focus-visible { outline: 3px solid var(--paper); outline-offset: 3px; }
+  .play svg { width: 21px; height: 21px; fill: currentColor; }
   .play .i-pause { display: none; }
   .playing .play .i-play { display: none; }
   .playing .play .i-pause { display: block; }
-  .track { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+  .playing .play { box-shadow: 0 0 26px 4px rgba(241, 182, 94, 0.45); }
+
+  .track { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
   .seek {
-    -webkit-appearance: none; appearance: none;
-    width: 100%; height: 22px; margin: 0;
-    background: transparent; cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 22px;
+    margin: 0;
+    background: transparent;
+    cursor: pointer;
     --pos: 0%;
   }
   .seek::-webkit-slider-runnable-track {
-    height: 4px; border-radius: 2px;
-    background: linear-gradient(to right, var(--accent) var(--pos), var(--track) var(--pos));
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--lamp) var(--pos), var(--track) var(--pos));
   }
-  .seek::-moz-range-track { height: 4px; border-radius: 2px; background: var(--track); }
-  .seek::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--accent); }
+  .seek::-moz-range-track { height: 3px; border-radius: 2px; background: var(--track); }
+  .seek::-moz-range-progress { height: 3px; border-radius: 2px; background: var(--lamp); }
   .seek::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
-    background: var(--accent); border: 0; margin-top: -6px;
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    margin-top: -6px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--paper);
   }
-  .seek::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 0; }
+  .seek::-moz-range-thumb { width: 15px; height: 15px; border: 0; border-radius: 50%; background: var(--paper); }
   .times {
-    display: flex; justify-content: space-between;
-    font-size: 0.875rem; color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+    color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
-  .nojs { font-size: 0.9rem; color: var(--muted); }
-  @media (prefers-reduced-motion: no-preference) {
-    .play { transition: transform 0.12s ease; }
-    .play:active { transform: scale(0.94); }
+
+  @media (min-width: 900px) {
+    main {
+      margin-inline: auto 8vw;
+      justify-content: center;
+      padding-block: 48px;
+    }
+    .scene::after {
+      background:
+        linear-gradient(to left, rgba(7, 12, 26, 0.6) 0%, rgba(7, 12, 26, 0) 55%),
+        linear-gradient(to top, rgba(7, 12, 26, 0.5) 0%, rgba(7, 12, 26, 0) 40%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .play { transition: none; }
   }
 </style>
 </head>
 <body>
+<div class="scene" aria-hidden="true"></div>
+
 <main>
   <h1>I am climbing barricades in empty street at night</h1>
 
@@ -166,7 +190,6 @@
     var dur = document.getElementById('dur');
     var dragging = false;
 
-    // Eigen bediening vervangt de standaardspeler zodra de pagina geladen is.
     audio.removeAttribute('controls');
     audio.hidden = true;
 
