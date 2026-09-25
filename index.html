@@ -455,13 +455,16 @@
       if (img.complete && img.naturalWidth) { build(); } else { img.addEventListener('load', build); }
     })();
 
-    /* A falling star, now and then, somewhere quiet in the sky. Random
-       position and timing so it never feels like a loop. */
+    /* A falling star, just twice, somewhere quiet in the sky. Random
+       position and timing so the two never feel like a pattern. */
     (function () {
       var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduceMotion) return;
       var sky = document.getElementById('sky');
+      var remaining = 2;
       function schedule() {
+        if (remaining <= 0) return;
+        remaining--;
         var delay = 16000 + Math.random() * 34000;
         setTimeout(function () {
           var star = document.createElement('i');
