@@ -217,40 +217,78 @@
     50%      { transform: rotate(0.35deg); }
   }
 
-  /* Chimney smoke: a couple of faint puffs drifting up and thinning out. */
+  /* Chimney smoke: a few faint puffs drifting up and thinning out. Kept
+     close to the chimney (small size, short rise, base anchored low in
+     the puff) so it stays inside the visible frame even on wide windows,
+     where the cover-fit crop leaves little headroom above the rooftop. */
   .smoke-puff {
     position: absolute;
     left: 76%;
     top: 7.6%;
-    width: 3.2%;
+    width: 2.2%;
     aspect-ratio: 1;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(210, 220, 235, 0.55), rgba(210, 220, 235, 0) 72%);
-    filter: blur(1.5px);
+    background: radial-gradient(circle, rgba(224, 232, 244, 0.85), rgba(224, 232, 244, 0) 72%);
+    filter: blur(1px);
     opacity: 0;
     pointer-events: none;
     animation: rise var(--dur) ease-out var(--delay) infinite;
   }
   @keyframes rise {
-    0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-    18%  { opacity: 0.34; }
-    100% { transform: translate(calc(-50% + 1.2em), calc(-50% - 5.8em)) scale(1.7); opacity: 0; }
+    0%   { transform: translate(-50%, -30%) scale(0.55); opacity: 0; }
+    12%  { opacity: 0.64; }
+    50%  { opacity: 0.24; }
+    100% { transform: translate(calc(-50% + 0.7em), calc(-30% - 1em)) scale(1.05); opacity: 0; }
   }
 
-  /* The one lit window down the street, dimmed by hand once the song ends. */
-  .window-dim {
+  /* The one lit window down the street: a duplicate sliver of the same photo,
+     masked exactly to the window and dimmed with it once the song ends --
+     so the glass itself goes dark rather than a shape pasted over the wall. */
+  .window-dark {
     position: absolute;
-    left: 65.1%;
-    top: 59.2%;
-    width: 1.6%;
-    aspect-ratio: 13 / 22;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(ellipse, rgba(6, 10, 22, 1) 0%, rgba(6, 10, 22, 0.98) 62%, rgba(6, 10, 22, 0) 100%);
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    user-select: none;
+    -webkit-mask-image: radial-gradient(ellipse 0.6% 1.5% at 65.1% 59.2%, #fff 0%, #fff 50%, transparent 100%);
+    mask-image: radial-gradient(ellipse 0.6% 1.5% at 65.1% 59.2%, #fff 0%, #fff 50%, transparent 100%);
+    filter: brightness(0.08) saturate(0.6);
+    opacity: 0;
+    transition: opacity 2s ease;
+  }
+  .window-dark.dimming { opacity: 1; }
+
+  /* A falling star, now and then, somewhere quiet in the sky. */
+  .shooting-star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: #fff8ea;
+    box-shadow: 0 0 5px 1px rgba(255, 248, 234, 0.85);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 2.6s ease;
+    animation: shoot 1.15s ease-out forwards;
   }
-  .window-dim.dimming { opacity: 1; }
+  .shooting-star::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 50%;
+    width: 42px;
+    height: 1px;
+    background: linear-gradient(to left, rgba(255, 248, 234, 0.75), transparent);
+    transform: translateY(-50%) rotate(28deg);
+    transform-origin: right center;
+  }
+  @keyframes shoot {
+    0%   { opacity: 0; transform: translate(0, 0); }
+    10%  { opacity: 1; }
+    78%  { opacity: 0.8; }
+    100% { opacity: 0; transform: translate(calc(8vw * var(--scale, 1)), calc(4.2vw * var(--scale, 1))); }
+  }
 
   .veil {
     position: absolute;
@@ -342,7 +380,8 @@
     .tree-sway, .smoke-puff { animation: none; }
     .tree-sway { display: none; }
     .smoke-puff { display: none; }
-    .window-dim { transition: none; }
+    .shooting-star { display: none; }
+    .window-dark { transition: none; }
   }
 </style>
 </head>
@@ -362,9 +401,10 @@
     <div class="wall-glow"></div>
     <div class="lamp-glow"></div>
     <div class="lamp-dim"></div>
-    <i class="smoke-puff" style="--dur: 9s; --delay: 0s"></i>
-    <i class="smoke-puff" style="left: 76.4%; --dur: 9s; --delay: -4.5s"></i>
-    <div class="window-dim" id="windowDim"></div>
+    <i class="smoke-puff" style="--dur: 7s; --delay: 0s"></i>
+    <i class="smoke-puff" style="left: 76.4%; --dur: 7s; --delay: -2.3s"></i>
+    <i class="smoke-puff" style="left: 75.7%; --dur: 7s; --delay: -4.6s"></i>
+    <img class="window-dark" id="windowDim" src="image.png" alt="" decoding="async" aria-hidden="true">
   </div>
   <div class="veil"></div>
 </div>
@@ -413,6 +453,29 @@
         } catch (e) { /* no mask, no clouds: the still picture stays */ }
       }
       if (img.complete && img.naturalWidth) { build(); } else { img.addEventListener('load', build); }
+    })();
+
+    /* A falling star, now and then, somewhere quiet in the sky. Random
+       position and timing so it never feels like a loop. */
+    (function () {
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+      var sky = document.getElementById('sky');
+      function schedule() {
+        var delay = 16000 + Math.random() * 34000;
+        setTimeout(function () {
+          var star = document.createElement('i');
+          star.className = 'shooting-star';
+          star.style.left = (8 + Math.random() * 55) + '%';
+          star.style.top = (3 + Math.random() * 22) + '%';
+          star.style.setProperty('--scale', (0.75 + Math.random() * 0.5).toFixed(2));
+          star.style.animationDuration = (1 + Math.random() * 0.3).toFixed(2) + 's';
+          sky.appendChild(star);
+          star.addEventListener('animationend', function () { star.remove(); });
+          schedule();
+        }, delay);
+      }
+      schedule();
     })();
 
     var audio = document.getElementById('audio');
