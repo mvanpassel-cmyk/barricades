@@ -462,10 +462,15 @@
       if (reduceMotion) return;
       var sky = document.getElementById('sky');
       var remaining = 2;
+      var firstDone = false;
       function schedule() {
         if (remaining <= 0) return;
         remaining--;
-        var delay = 16000 + Math.random() * 34000;
+        // Spread the two well apart -- the first while the page has just
+        // settled, the second well into the song -- rather than both
+        // firing back to back in the first minute where they're easy to miss.
+        var delay = firstDone ? (75000 + Math.random() * 90000) : (10000 + Math.random() * 20000);
+        firstDone = true;
         setTimeout(function () {
           var star = document.createElement('i');
           star.className = 'shooting-star';
