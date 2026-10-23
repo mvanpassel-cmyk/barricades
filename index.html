@@ -263,37 +263,6 @@
     100% { transform: translate(120%, -560%) scale(2.6, 2.1); opacity: 0; }
   }
 
-  /* Two moths circling the lamp: tiny warm specks on an uneven orbit. */
-  .moth-orbit {
-    position: absolute;
-    left: 32%;
-    top: 16.4%;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-    animation: orbit var(--dur) linear var(--delay) infinite;
-  }
-  .moth {
-    position: absolute;
-    width: 0.32vmax;
-    height: 0.32vmax;
-    border-radius: 50%;
-    background: rgba(255, 236, 196, 0.95);
-    box-shadow: 0 0 4px 1px rgba(255, 214, 140, 0.55);
-    transform: translate(-50%, -50%);
-    animation: flutter var(--fl) ease-in-out infinite alternate;
-  }
-  @keyframes orbit {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-  }
-  @keyframes flutter {
-    0%   { left: var(--r1); top: -0.4vmax; opacity: 0.9; }
-    35%  { left: var(--r2); top: 0.5vmax;  opacity: 0.55; }
-    70%  { left: var(--r1); top: 0.1vmax;  opacity: 1; }
-    100% { left: var(--r2); top: -0.6vmax; opacity: 0.7; }
-  }
-
   /* The one lit window down the street. When the song ends its light goes out:
      window-off.png holds that window, pixel for pixel, as an unlit pane (dark glass,
      frame and mullions), transparent everywhere else. It is laid over the photo
@@ -428,9 +397,9 @@
     .cloud, .star, .lamp-glow, .lamp-dim, .wall-glow { animation: none; }
     .sky { display: none; }
     .playing .play { animation: none; box-shadow: 0 0 22px 4px rgba(241, 182, 94, 0.45); }
-    .tree-sway, .smoke-puff, .smoke-far, .moth-orbit, .moth { animation: none; }
+    .tree-sway, .smoke-puff, .smoke-far { animation: none; }
     .tree-sway { display: none; }
-    .smoke-puff, .smoke-far, .moth-orbit { display: none; }
+    .smoke-puff, .smoke-far { display: none; }
     .shooting-star { display: none; }
     .window-dark { transition: none; }
   }
@@ -461,8 +430,6 @@
     <i class="smoke-far" style="--dur: 12s; --delay: -6s"></i>
     <i class="smoke-far" style="--dur: 12s; --delay: -8s"></i>
     <i class="smoke-far" style="--dur: 12s; --delay: -10s"></i>
-    <div class="moth-orbit" style="--dur: 5.5s; --delay: 0s"><i class="moth" style="--r1: 3.4vmax; --r2: 4.4vmax; --fl: 0.37s"></i></div>
-    <div class="moth-orbit" style="--dur: 8s; --delay: -3s; animation-direction: reverse"><i class="moth" style="--r1: 5vmax; --r2: 3.8vmax; --fl: 0.29s"></i></div>
     <img class="window-dark" id="windowDim" src="window-off.png" alt="" decoding="async" aria-hidden="true">
   </div>
   <div class="veil"></div>
