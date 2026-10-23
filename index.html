@@ -241,9 +241,10 @@
     100% { transform: translate(calc(-50% + 0.7em), calc(-30% - 1em)) scale(1.05); opacity: 0; }
   }
 
-  /* The one lit window down the street: a duplicate sliver of the same photo,
-     masked exactly to the window and dimmed with it once the song ends --
-     so the glass itself goes dark rather than a shape pasted over the wall. */
+  /* The one lit window down the street. When the song ends its light goes out:
+     window-off.png holds that window, pixel for pixel, as an unlit pane (dark glass,
+     frame and mullions), transparent everywhere else. It is laid over the photo
+     and faded in, so the whole window goes dark, corners included. */
   .window-dark {
     position: absolute;
     inset: 0;
@@ -252,9 +253,6 @@
     display: block;
     pointer-events: none;
     user-select: none;
-    -webkit-mask-image: radial-gradient(ellipse 0.46% 1.3% at 65.1% 59.3%, #fff 0%, #fff 78%, transparent 100%);
-    mask-image: radial-gradient(ellipse 0.46% 1.3% at 65.1% 59.3%, #fff 0%, #fff 78%, transparent 100%);
-    filter: brightness(0.24) saturate(0.75);
     opacity: 0;
     transition: opacity 2.8s ease;
   }
@@ -404,7 +402,7 @@
     <i class="smoke-puff" style="--dur: 7s; --delay: 0s"></i>
     <i class="smoke-puff" style="left: 76.4%; --dur: 7s; --delay: -2.3s"></i>
     <i class="smoke-puff" style="left: 75.7%; --dur: 7s; --delay: -4.6s"></i>
-    <img class="window-dark" id="windowDim" src="image.png" alt="" decoding="async" aria-hidden="true">
+    <img class="window-dark" id="windowDim" src="window-off.png" alt="" decoding="async" aria-hidden="true">
   </div>
   <div class="veil"></div>
 </div>
